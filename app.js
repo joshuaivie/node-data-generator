@@ -1,8 +1,8 @@
 const fs = require("fs");
 const faker = require("faker");
 const ngfaker = require("ng-faker");
-const { json2csvAsync } = require("json-2-csv");
 const { writeFile } = require("fs").promises;
+const { json2csvAsync } = require("json-2-csv");
 
 const dir = "./test_files/";
 
@@ -70,13 +70,24 @@ const writeCSV = async (fileName, data) => {
   }
 };
 
+const getDate = () => {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+
+  return dd + mm + yyyy;
+};
+
 const generateTestFiles = async (numberOfFiles, minRecord, maxRecord) => {
+  const date = getDate();
+
   for (let fileCount = 0; fileCount < numberOfFiles; fileCount++) {
     const fileLabel = String(fileCount + 1).padStart(
       numberOfFiles.toString().length,
       "0"
     );
-    const fileName = `07112021.${fileLabel}.mockdata.nifi.elt.test.csv`;
+    const fileName = `${date}.${fileLabel}.mockdata.nifi.elt.test.csv`;
     const testData = generateData(randomIntFromInterval(minRecord, maxRecord));
     const csv = await convertJSONTOCSV(testData);
 
