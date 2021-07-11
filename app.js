@@ -35,8 +35,6 @@ const generateData = (numberOfRecords) => {
 
     result.push({
       msisdn: faker.phone.phoneNumber("23480#######"),
-      date: String(Math.round(randomDate.getTime() / 1000)),
-      time: randomDate.toLocaleTimeString().replace(/([\d]+:[\d]{3})/, "$1$3"),
       first_name: ngfaker.name.firstName(),
       last_name: ngfaker.name.lastName(),
       gender: faker.random.arrayElement(genders),
@@ -45,6 +43,10 @@ const generateData = (numberOfRecords) => {
       email: faker.internet.email(),
       session_id: faker.datatype.uuid(),
       session_type: sessionType,
+      session_date: String(Math.round(randomDate.getTime() / 1000)),
+      session_start: randomDate
+        .toLocaleTimeString()
+        .replace(/([\d]+:[\d]{3})/, "$1$3"),
       session_duration: sessionDuration,
       session_cost: sessionCost,
     });
