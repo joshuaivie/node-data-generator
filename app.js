@@ -6,6 +6,11 @@ const { writeFile } = require("fs").promises;
 
 const dir = "./test_files/";
 
+const args = process.argv.slice(2);
+const numberOfFiles = args[0];
+const minRecord = args[1];
+const maxRecord = args[2];
+
 const randomIntFromInterval = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
@@ -82,4 +87,4 @@ const generateTestFiles = async (numberOfFiles, minRecord, maxRecord) => {
   }
 };
 
-generateTestFiles(1, 100, 120);
+generateTestFiles(numberOfFiles, minRecord, maxRecord);
