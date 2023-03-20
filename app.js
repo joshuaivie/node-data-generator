@@ -8,8 +8,7 @@ const dir = "./test_files/";
 
 const args = process.argv.slice(2);
 const numberOfFiles = args[0];
-const minRecord = args[1];
-const maxRecord = args[2];
+const numberOfRecords = args[1];
 
 const randomIntFromInterval = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -18,37 +17,43 @@ const randomIntFromInterval = (min, max) => {
 const generateData = (numberOfRecords) => {
   const result = [];
   for (let i = 0; i < numberOfRecords; i++) {
-    const randomDate = faker.date.recent(10);
-    const genders = ["female", "male", null];
-    const sessionTypes = ["voice", "data", "sms"];
-    const sessionType = faker.random.arrayElement(sessionTypes);
-    const sessionDuration =
-      sessionType === "voice"
-        ? String(faker.datatype.number({ min: 1, max: 3600 })).padStart(4, "0")
-        : null;
-    const sessionCost =
-      sessionType === "voice"
-        ? String(((parseInt(sessionDuration) * 11) / 100).toFixed(2))
-        : sessionType === "sms"
-        ? "4"
-        : String(faker.datatype.number({ min: 1, max: 10000 }));
+
+    const genders = ["female", "male", null, "maaale", "f", "feeeemale"];
+
+    let firstName = ngfaker.name.firstName()
+    let lastName = ngfaker.name.lastName()
+    let phoneNumber = faker.phone.phoneNumberFormat()
+    let gender = faker.random.arrayElement(genders)
+    let email = faker.internet.email()
+    let dateOfBirth = faker.date.past(70).toLocaleDateString();
+
+    // add dirty data to attributes
+    if (i % 3 === 0) {
+      // add a number to the first name
+      firstName += Math.floor(Math.random() * 10);
+    }
+
+    if (i % 5 === 0) {
+      // add a number to the first name
+      lastName += Math.floor(Math.random() * 10);
+    }
+
+    if (i % 7 === 0) {
+      // change the date format to something invalid
+      dateOfBirth = faker.date.past(50).toISOString().split('T')[0];
+    }
+    if (i % 11 === 0) {
+      // remove the '@' symbol from the email address
+      email = email.replace('@', '');
+    }
 
     result.push({
-      msisdn: faker.phone.phoneNumber("23480#######"),
-      first_name: ngfaker.name.firstName(),
-      last_name: ngfaker.name.lastName(),
-      gender: faker.random.arrayElement(genders),
-      address: faker.address.streetAddress(),
-      state: ngfaker.address.state(),
-      email: faker.internet.email(),
-      session_id: faker.datatype.uuid(),
-      session_type: sessionType,
-      session_date: String(Math.round(randomDate.getTime() / 1000)),
-      session_start: randomDate
-        .toLocaleTimeString()
-        .replace(/([\d]+:[\d]{3})/, "$1$3"),
-      session_duration: sessionDuration,
-      session_cost: sessionCost,
+      firstName,
+      lastName,
+      phoneNumber,
+      gender,
+      email,
+      dateOfBirth
     });
   }
   return result;
@@ -81,7 +86,7 @@ const getDate = () => {
   return dd + mm + yyyy;
 };
 
-const generateTestFiles = async (numberOfFiles, minRecord, maxRecord) => {
+const generateTestFiles = async (numberOfFiles, numberOfRecords) => {
   const date = getDate();
 
   for (let fileCount = 0; fileCount < numberOfFiles; fileCount++) {
@@ -90,7 +95,7 @@ const generateTestFiles = async (numberOfFiles, minRecord, maxRecord) => {
       "0"
     );
     const fileName = `${date}.${fileLabel}.mockdata.nifi.elt.test.csv`;
-    const testData = generateData(randomIntFromInterval(minRecord, maxRecord));
+    const testData = generateData(numberOfRecords);
     const csv = await convertJSONTOCSV(testData);
 
     if (!fs.existsSync(dir)) {
@@ -100,4 +105,4 @@ const generateTestFiles = async (numberOfFiles, minRecord, maxRecord) => {
   }
 };
 
-generateTestFiles(numberOfFiles, minRecord, maxRecord);
+generateTestFiles(numberOfFiles, numberOfRecords);
