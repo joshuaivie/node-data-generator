@@ -19,13 +19,16 @@ const generateData = (numberOfRecords) => {
   for (let i = 0; i < numberOfRecords; i++) {
 
     const genders = ["female", "male", null, "maaale", "f", "feeeemale"];
+    const accountOfficers = ['farouq.are', 'joshua.ivie', 'quadri.akinpelu']
 
     let firstName = ngfaker.name.firstName()
     let lastName = ngfaker.name.lastName()
     let phoneNumber = faker.phone.phoneNumberFormat()
     let gender = faker.random.arrayElement(genders)
     let email = faker.internet.email()
-    let dateOfBirth = faker.date.past(70).toLocaleDateString();
+    let dateOfBirth = faker.date.past(70).toLocaleDateString()
+    let accountOfficer = faker.random.arrayElement(accountOfficers)
+    
 
     // add dirty data to attributes
     if (i % 3 === 0) {
@@ -53,7 +56,8 @@ const generateData = (numberOfRecords) => {
       phoneNumber,
       gender,
       email,
-      dateOfBirth
+      dateOfBirth,
+      accountOfficer,
     });
   }
   return result;
